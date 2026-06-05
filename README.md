@@ -1,4 +1,3 @@
-```markdown
 <div align="center">
 
 <img src="https://img.shields.io/badge/Version-1.0.0-a78bfa?style=for-the-badge" alt="Version">
