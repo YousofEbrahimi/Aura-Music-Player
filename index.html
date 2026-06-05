@@ -34,6 +34,7 @@
       background: var(--bg);
       color: var(--text);
       font-family: 'DM Mono', monospace;
+      -webkit-font-smoothing: antialiased;
     }
 
     body { display: flex; align-items: center; justify-content: center; }
@@ -50,13 +51,16 @@
 
     .bg-art {
       position: fixed;
-      inset: -60px;
+      inset: -80px;
       background-size: cover;
       background-position: center;
-      filter: blur(90px) saturate(1.4) brightness(0.25);
-      transition: background-image 1.2s ease;
+      filter: blur(100px) saturate(1.5) brightness(0.22);
+      transition: background-image 1.5s ease, opacity 0.8s ease;
       z-index: 0;
+      opacity: 0;
     }
+
+    .bg-art.show { opacity: 1; }
 
     .app {
       position: relative;
@@ -66,16 +70,17 @@
       max-width: 1200px;
       height: 86vh;
       max-height: 720px;
-      background: rgba(12,11,18,0.88);
-      backdrop-filter: blur(50px);
+      background: rgba(12,11,18,0.85);
+      backdrop-filter: blur(60px);
+      -webkit-backdrop-filter: blur(60px);
       border: 1px solid var(--border);
       border-radius: 24px;
       overflow: hidden;
-      animation: appIn 0.8s ease forwards;
+      animation: appIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     @keyframes appIn {
-      from { opacity: 0; transform: scale(0.97) translateY(16px); }
+      from { opacity: 0; transform: scale(0.96) translateY(20px); }
       to { opacity: 1; transform: scale(1) translateY(0); }
     }
 
@@ -97,7 +102,7 @@
       left: 0;
       right: 0;
       height: 140px;
-      opacity: 0.5;
+      opacity: 0.45;
       pointer-events: none;
     }
 
@@ -139,10 +144,12 @@
     .vinyl::after {
       content: '';
       position: absolute;
-      width: 28px; height: 28px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       background: var(--bg);
-      top: 50%; left: 50%;
+      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
       border: 3px solid rgba(255,255,255,0.08);
     }
@@ -157,11 +164,11 @@
       position: relative;
       z-index: 2;
       box-shadow: 0 24px 80px rgba(0,0,0,0.65);
-      transition: box-shadow 0.4s ease;
+      transition: box-shadow 0.5s ease;
     }
 
     .album-art.glow {
-      box-shadow: 0 24px 80px rgba(0,0,0,0.65), 0 0 60px var(--accent-glow);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.65), 0 0 80px var(--accent-glow);
     }
 
     .album-art .ph {
@@ -170,9 +177,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background 0.8s ease;
     }
 
-    .album-art .ph svg { width: 64px; height: 64px; opacity: 0.6; }
+    .album-art .ph svg { width: 64px; height: 64px; opacity: 0.5; }
 
     .song-info {
       text-align: center;
@@ -191,12 +199,14 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      transition: opacity 0.3s ease;
     }
 
     .song-artist {
       font-size: 12px;
       color: var(--text-sec);
       letter-spacing: 0.06em;
+      transition: opacity 0.3s ease;
     }
 
     /* Progress */
@@ -216,9 +226,19 @@
       position: relative;
       transition: height 0.15s ease;
       margin-bottom: 8px;
+      touch-action: none;
     }
 
     .progress-bar:hover { height: 7px; }
+
+    .progress-buffered {
+      position: absolute;
+      height: 100%;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      width: 0;
+      pointer-events: none;
+    }
 
     .progress-fill {
       height: 100%;
@@ -235,15 +255,16 @@
       right: -6px;
       top: 50%;
       transform: translateY(-50%) scale(0);
-      width: 13px;
-      height: 13px;
+      width: 14px;
+      height: 14px;
       background: #fff;
       border-radius: 50%;
       transition: transform 0.2s ease;
       box-shadow: 0 0 12px var(--accent-glow);
     }
 
-    .progress-bar:hover .progress-fill::after {
+    .progress-bar:hover .progress-fill::after,
+    .progress-bar.seeking .progress-fill::after {
       transform: translateY(-50%) scale(1);
     }
 
@@ -259,7 +280,7 @@
     .controls {
       display: flex;
       align-items: center;
-      gap: 18px;
+      gap: 16px;
       margin-bottom: 22px;
       z-index: 2;
     }
@@ -269,21 +290,24 @@
       border: none;
       color: var(--text-sec);
       cursor: pointer;
-      padding: 8px;
+      padding: 10px;
       border-radius: 50%;
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       outline: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .btn:hover { color: var(--text); background: var(--surface-hover); }
+    .btn:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
     .btn.on { color: var(--accent); }
-    .btn svg { width: 20px; height: 20px; }
+    .btn svg { width: 20px; height: 20px; flex-shrink: 0; }
 
     .btn-play {
-      width: 58px; height: 58px;
+      width: 58px;
+      height: 58px;
       background: var(--accent) !important;
       color: var(--bg) !important;
       border-radius: 50%;
@@ -291,9 +315,8 @@
       transition: all 0.2s ease;
     }
 
-    .btn-play:hover { transform: scale(1.08); box-shadow: 0 6px 32px var(--accent-glow); }
-    .btn-play:active { transform: scale(0.97); }
-    .btn-play svg { width: 24px; height: 24px; }
+    .btn-play:hover { transform: scale(1.08); box-shadow: 0 6px 36px var(--accent-glow); }
+    .btn-play:active { transform: scale(0.95); }
 
     /* Volume */
     .vol-row {
@@ -315,15 +338,22 @@
 
     .vol-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 14px; height: 14px;
+      width: 14px;
+      height: 14px;
       background: var(--text);
       border-radius: 50%;
       cursor: pointer;
       box-shadow: 0 0 6px rgba(0,0,0,0.4);
+      transition: transform 0.15s ease;
+    }
+
+    .vol-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
     }
 
     .vol-slider::-moz-range-thumb {
-      width: 14px; height: 14px;
+      width: 14px;
+      height: 14px;
       background: var(--text);
       border-radius: 50%;
       cursor: pointer;
@@ -345,6 +375,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-shrink: 0;
     }
 
     .pl-head h2 {
@@ -353,16 +384,24 @@
       font-weight: 700;
     }
 
+    .pl-count {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: 8px;
+      font-weight: 400;
+    }
+
     .add-btn {
       background: var(--surface);
       border: 1px solid var(--border);
       color: var(--text-sec);
-      padding: 7px 14px;
+      padding: 8px 14px;
       border-radius: 8px;
       font-family: 'DM Mono', monospace;
       font-size: 11px;
       cursor: pointer;
       transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .add-btn:hover {
@@ -375,6 +414,7 @@
       flex: 1;
       overflow-y: auto;
       padding: 10px;
+      scroll-behavior: smooth;
     }
 
     .pl-list::-webkit-scrollbar { width: 4px; }
@@ -388,7 +428,7 @@
       padding: 10px 12px;
       border-radius: var(--r-sm);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background 0.2s ease;
       animation: trackIn 0.35s ease forwards;
       opacity: 0;
     }
@@ -408,16 +448,21 @@
       width: 22px;
       text-align: center;
       flex-shrink: 0;
+      transition: color 0.2s ease;
     }
 
     .track.active .t-num { color: var(--accent); }
 
     .t-art {
-      width: 38px; height: 38px;
+      width: 38px;
+      height: 38px;
       border-radius: 8px;
       overflow: hidden;
       flex-shrink: 0;
+      transition: transform 0.2s ease;
     }
+
+    .track:hover .t-art { transform: scale(1.05); }
 
     .t-art .mini-ph {
       width: 100%;
@@ -433,6 +478,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      transition: color 0.2s ease;
     }
 
     .t-artist {
@@ -445,6 +491,8 @@
       font-size: 10px;
       color: var(--text-muted);
       flex-shrink: 0;
+      min-width: 32px;
+      text-align: right;
     }
 
     .t-del {
@@ -453,8 +501,8 @@
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      padding: 3px;
-      border-radius: 4px;
+      padding: 4px;
+      border-radius: 6px;
       transition: all 0.2s ease;
       flex-shrink: 0;
       display: flex;
@@ -483,7 +531,7 @@
 
     @keyframes bounce { to { height: 20%; } }
 
-    /* Empty */
+    /* Empty state */
     .empty {
       display: flex;
       flex-direction: column;
@@ -496,26 +544,51 @@
       text-align: center;
     }
 
-    .empty svg { width: 36px; height: 36px; opacity: 0.35; }
+    .empty svg { width: 36px; height: 36px; opacity: 0.3; }
     .empty p { font-size: 12px; line-height: 1.6; }
+
+    /* Loading state */
+    .loading-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 16px;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 2px solid rgba(255,255,255,0.06);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spinLoader 0.8s linear infinite;
+    }
+
+    @keyframes spinLoader { to { transform: rotate(360deg); } }
+
+    .loading-state p { font-size: 11px; }
 
     /* Drop zone */
     .drop-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(8,7,12,0.92);
+      background: rgba(8,7,12,0.94);
       z-index: 100;
       align-items: center;
       justify-content: center;
       backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
     }
 
     .drop-overlay.show { display: flex; }
 
     .drop-box {
-      width: 380px;
-      height: 260px;
+      width: 360px;
+      height: 240px;
       border: 2px dashed var(--accent);
       border-radius: 24px;
       display: flex;
@@ -528,8 +601,8 @@
     }
 
     @keyframes dropPulse {
-      0%, 100% { border-color: var(--accent); }
-      50% { border-color: var(--warm); }
+      0%, 100% { border-color: var(--accent); transform: scale(1); }
+      50% { border-color: var(--warm); transform: scale(1.02); }
     }
 
     .drop-box svg { width: 44px; height: 44px; }
@@ -543,7 +616,7 @@
       transform: translateX(-50%);
       font-size: 9px;
       color: var(--text-muted);
-      opacity: 0.45;
+      opacity: 0.4;
       z-index: 2;
       white-space: nowrap;
     }
@@ -556,6 +629,9 @@
       font-family: inherit;
       font-size: 9px;
     }
+
+    /* Tooltip */
+    .btn[title] { position: relative; }
 
     /* ---- RESPONSIVE ---- */
     @media (max-width: 820px) {
@@ -581,9 +657,9 @@
       .vinyl { width: 160px; height: 160px; top: 5px; }
       .song-title { font-size: 18px; }
       .progress-sec { max-width: 100%; }
-      .controls { gap: 14px; }
+      .controls { gap: 12px; }
       .btn-play { width: 50px; height: 50px; }
-      .btn-play svg { width: 22px; height: 22px; }
+      .vol-slider { width: 80px; }
 
       .playlist {
         flex: 1;
@@ -593,6 +669,8 @@
 
       .visualizer { height: 80px; }
       .hint { display: none; }
+
+      .t-del { opacity: 1; }
     }
 
     @media (max-width: 400px) {
@@ -600,7 +678,8 @@
       .album-art { width: 140px; height: 140px; }
       .vinyl { width: 130px; height: 130px; }
       .song-title { font-size: 16px; }
-      .controls { gap: 10px; }
+      .controls { gap: 8px; }
+      .player { padding: 16px 12px 12px; }
     }
   </style>
 </head>
@@ -614,7 +693,7 @@
       <div class="artwork-wrap">
         <div class="vinyl" id="vinyl"></div>
         <div class="album-art" id="art">
-          <div class="ph" style="background: linear-gradient(135deg, #1e1b4b, #312e81);">
+          <div class="ph" id="artPh" style="background: linear-gradient(135deg, #1e1b4b, #312e81);">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
           </div>
         </div>
@@ -627,6 +706,7 @@
 
       <div class="progress-sec">
         <div class="progress-bar" id="pBar">
+          <div class="progress-buffered" id="pBuffered"></div>
           <div class="progress-fill" id="pFill"></div>
         </div>
         <div class="time-row">
@@ -636,28 +716,29 @@
       </div>
 
       <div class="controls">
-        <button class="btn" id="bShuffle" title="Shuffle">
+        <button class="btn" id="bShuffle" title="Shuffle" aria-label="Shuffle">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
         </button>
-        <button class="btn" id="bPrev" title="Previous">
+        <button class="btn" id="bPrev" title="Previous" aria-label="Previous track">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
         </button>
-        <button class="btn btn-play" id="bPlay" title="Play">
+        <button class="btn btn-play" id="bPlay" title="Play" aria-label="Play">
           <svg viewBox="0 0 24 24" fill="currentColor" id="icoPlay"><path d="M8 5v14l11-7z"/></svg>
         </button>
-        <button class="btn" id="bNext" title="Next">
+        <button class="btn" id="bNext" title="Next" aria-label="Next track">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
         </button>
-        <button class="btn" id="bRepeat" title="Repeat">
+        <button class="btn" id="bRepeat" title="Repeat" aria-label="Repeat" style="position:relative;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          <span id="repeatOne" style="position:absolute;font-size:8px;font-weight:800;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;display:none;color:var(--accent);">1</span>
         </button>
       </div>
 
       <div class="vol-row">
-        <button class="btn" id="bMute" title="Volume">
+        <button class="btn" id="bMute" title="Volume" aria-label="Mute">
           <svg viewBox="0 0 24 24" fill="currentColor" id="icoVol"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
         </button>
-        <input type="range" class="vol-slider" id="vSlider" min="0" max="1" step="0.01" value="0.7">
+        <input type="range" class="vol-slider" id="vSlider" min="0" max="1" step="0.01" value="0.7" aria-label="Volume">
       </div>
 
       <div class="hint">
@@ -667,7 +748,7 @@
 
     <div class="playlist">
       <div class="pl-head">
-        <h2>Playlist</h2>
+        <h2>Playlist <span class="pl-count" id="plCount"></span></h2>
         <button class="add-btn" id="bAdd">+ Add Files</button>
         <input type="file" id="fInput" accept="audio/*" multiple hidden>
       </div>
@@ -675,6 +756,10 @@
         <div class="empty" id="emptySt">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
           <p>Drop audio files here<br>or click <strong>+ Add Files</strong></p>
+        </div>
+        <div class="loading-state" id="loadingSt" style="display:none;">
+          <div class="spinner"></div>
+          <p>Generating demo tracks...</p>
         </div>
       </div>
     </div>
@@ -684,16 +769,16 @@
     <div class="drop-box">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       <p>Drop your music here</p>
-      <span>MP3, WAV, OGG, FLAC supported</span>
+      <span>MP3, WAV, OGG, FLAC, AAC</span>
     </div>
   </div>
 
-  <audio id="audio"></audio>
+  <audio id="audio" preload="auto"></audio>
 
   <script>
     /* ===== Utilities ===== */
     function fmt(s) {
-      if (!s || isNaN(s)) return '0:00';
+      if (!s || isNaN(s) || !isFinite(s)) return '0:00';
       const m = Math.floor(s / 60);
       const sec = Math.floor(s % 60);
       return m + ':' + (sec < 10 ? '0' : '') + sec;
@@ -722,7 +807,7 @@
       return new Blob([ab], { type: 'audio/wav' });
     }
 
-    /* ===== Demo Tracks ===== */
+    /* ===== Demo Track Configs ===== */
     const DEMOS = [
       {
         title: 'Midnight Aura', artist: 'Aura Synth',
@@ -765,31 +850,28 @@
           const t = r * cfg.chords.length * bd + ci * bd;
           if (t >= cfg.dur) break;
 
-          // Pad
           cfg.chords[ci].forEach(f => {
             const o = ctx.createOscillator(), g = ctx.createGain();
             o.type = cfg.wave; o.frequency.value = f;
             const end = Math.min(t + bd, cfg.dur);
             g.gain.setValueAtTime(0, t);
             g.gain.linearRampToValueAtTime(cfg.vol, t + 0.4);
-            g.gain.setValueAtTime(cfg.vol, end - 0.6);
+            g.gain.setValueAtTime(cfg.vol, Math.max(t + 0.4, end - 0.6));
             g.gain.linearRampToValueAtTime(0, end);
             o.connect(g); g.connect(ctx.destination);
-            o.start(t); o.stop(end);
+            o.start(t); o.stop(end + 0.01);
           });
 
-          // Bass
           const bo = ctx.createOscillator(), bg = ctx.createGain();
           bo.type = 'sine'; bo.frequency.value = cfg.bass[ci];
           const bend = Math.min(t + bd, cfg.dur);
           bg.gain.setValueAtTime(0, t);
           bg.gain.linearRampToValueAtTime(cfg.vol * 1.2, t + 0.3);
-          bg.gain.setValueAtTime(cfg.vol * 1.2, bend - 0.5);
+          bg.gain.setValueAtTime(cfg.vol * 1.2, Math.max(t + 0.3, bend - 0.5));
           bg.gain.linearRampToValueAtTime(0, bend);
           bo.connect(bg); bg.connect(ctx.destination);
-          bo.start(t); bo.stop(bend);
+          bo.start(t); bo.stop(bend + 0.01);
 
-          // Melody arpeggio
           for (let b = 0; b < 4; b++) {
             const mt = t + b * (60 / cfg.tempo);
             if (mt >= cfg.dur) break;
@@ -806,8 +888,7 @@
         }
       }
 
-      const buf = await ctx.startRendering();
-      return bufToWav(buf);
+      return bufToWav(await ctx.startRendering());
     }
 
     /* ===== Player Class ===== */
@@ -818,11 +899,13 @@
         this.idx = -1;
         this.playing = false;
         this.shuffleMode = false;
-        this.repeatMode = 0;
+        this.repeatMode = 0; // 0=off, 1=all, 2=one
         this.seeking = false;
         this.ac = null;
         this.analyser = null;
         this.didInitViz = false;
+        this._prevVol = 0.7;
+        this._dragCount = 0;
 
         this.cache();
         this.events();
@@ -835,14 +918,17 @@
           play: $('bPlay'), icoPlay: $('icoPlay'),
           prev: $('bPrev'), next: $('bNext'),
           shuffle: $('bShuffle'), repeat: $('bRepeat'),
+          repeatOne: $('repeatOne'),
           mute: $('bMute'), icoVol: $('icoVol'),
           vSlider: $('vSlider'),
           pBar: $('pBar'), pFill: $('pFill'),
+          pBuffered: $('pBuffered'),
           tCur: $('tCur'), tTot: $('tTot'),
           sTitle: $('sTitle'), sArtist: $('sArtist'),
-          art: $('art'), bgArt: $('bgArt'),
-          vinyl: $('vinyl'),
+          art: $('art'), artPh: $('artPh'),
+          bgArt: $('bgArt'), vinyl: $('vinyl'),
           plList: $('plList'), emptySt: $('emptySt'),
+          loadingSt: $('loadingSt'), plCount: $('plCount'),
           add: $('bAdd'), fInput: $('fInput'),
           dropOv: $('dropOv'), viz: $('viz')
         };
@@ -857,73 +943,141 @@
         this.$.repeat.onclick = () => this.toggleRepeat();
         this.$.mute.onclick = () => this.toggleMute();
         this.$.vSlider.oninput = e => this.setVol(+e.target.value);
+
         a.ontimeupdate = () => this.onTime();
         a.onended = () => this.onEnd();
+        a.onloadedmetadata = () => this.onMeta();
+        a.onerror = () => this.onAudioError();
 
-        // Progress seek
-        const seekStart = e => { this.seeking = true; this.doSeek(e); };
-        this.$.pBar.onmousedown = seekStart;
-        this.$.pBar.ontouchstart = seekStart;
-        document.onmousemove = e => this.doSeek(e);
-        document.ontouchmove = e => this.doSeek(e);
-        document.onmouseup = () => this.seeking = false;
-        document.ontouchend = () => this.seeking = false;
+        // Progress seek - mouse
+        const seekStart = e => {
+          this.seeking = true;
+          this.$.pBar.classList.add('seeking');
+          this.doSeek(e);
+        };
+
+        this.$.pBar.addEventListener('mousedown', seekStart);
+        this.$.pBar.addEventListener('touchstart', seekStart, { passive: false });
+
+        document.addEventListener('mousemove', e => { if (this.seeking) this.doSeek(e); });
+        document.addEventListener('touchmove', e => { if (this.seeking) { e.preventDefault(); this.doSeek(e); } }, { passive: false });
+
+        const seekEnd = () => {
+          if (this.seeking) {
+            this.seeking = false;
+            this.$.pBar.classList.remove('seeking');
+          }
+        };
+        document.addEventListener('mouseup', seekEnd);
+        document.addEventListener('touchend', seekEnd);
 
         // Files
         this.$.add.onclick = () => this.$.fInput.click();
-        this.$.fInput.onchange = e => this.addFiles(e.target.files);
-
-        // Drag & drop
-        let dragC = 0;
-        document.ondragenter = e => { e.preventDefault(); dragC++; this.$.dropOv.classList.add('show'); };
-        document.ondragover = e => e.preventDefault();
-        this.$.dropOv.ondragleave = e => { dragC--; if (dragC <= 0) { dragC = 0; this.$.dropOv.classList.remove('show'); } };
-        this.$.dropOv.ondrop = e => {
-          e.preventDefault(); dragC = 0; this.$.dropOv.classList.remove('show');
-          const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('audio/'));
-          if (files.length) this.addFiles(files);
+        this.$.fInput.onchange = e => {
+          if (e.target.files.length) this.addFiles(e.target.files);
+          e.target.value = '';
         };
 
+        // Drag & drop - fixed counter
+        document.addEventListener('dragenter', e => {
+          e.preventDefault();
+          this._dragCount++;
+          this.$.dropOv.classList.add('show');
+        });
+
+        document.addEventListener('dragover', e => e.preventDefault());
+
+        document.addEventListener('dragleave', e => {
+          this._dragCount--;
+          if (this._dragCount <= 0) {
+            this._dragCount = 0;
+            this.$.dropOv.classList.remove('show');
+          }
+        });
+
+        this.$.dropOv.addEventListener('drop', e => {
+          e.preventDefault();
+          this._dragCount = 0;
+          this.$.dropOv.classList.remove('show');
+          const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('audio/'));
+          if (files.length) this.addFiles(files);
+        });
+
         // Keyboard
-        document.onkeydown = e => this.keys(e);
+        document.addEventListener('keydown', e => this.keys(e));
+
+        // Resize handler for canvas
+        window.addEventListener('resize', () => {
+          if (this.didInitViz) this.resizeCanvas();
+        });
       }
 
       initViz() {
         if (this.didInitViz) return;
         this.didInitViz = true;
-        this.ac = new (window.AudioContext || window.webkitAudioContext)();
-        this.analyser = this.ac.createAnalyser();
-        this.analyser.fftSize = 256;
-        const src = this.ac.createMediaElementSource(this.audio);
-        src.connect(this.analyser);
-        this.analyser.connect(this.ac.destination);
-        this.drawViz();
+
+        try {
+          this.ac = new (window.AudioContext || window.webkitAudioContext)();
+          this.analyser = this.ac.createAnalyser();
+          this.analyser.fftSize = 256;
+          this.analyser.smoothingTimeConstant = 0.8;
+          const src = this.ac.createMediaElementSource(this.audio);
+          src.connect(this.analyser);
+          this.analyser.connect(this.ac.destination);
+          this.resizeCanvas();
+          this.drawViz();
+        } catch (err) {
+          console.warn('Visualizer init failed:', err);
+          this.didInitViz = false;
+        }
+      }
+
+      resizeCanvas() {
+        const c = this.$.viz;
+        const dpr = window.devicePixelRatio || 1;
+        const rect = c.getBoundingClientRect();
+        c.width = rect.width * dpr;
+        c.height = rect.height * dpr;
+        const cx = c.getContext('2d');
+        cx.scale(dpr, dpr);
       }
 
       drawViz() {
         requestAnimationFrame(() => this.drawViz());
         const c = this.$.viz, cx = c.getContext('2d');
-        const w = c.offsetWidth, h = c.offsetHeight;
-        if (c.width !== w * 2) { c.width = w * 2; c.height = h * 2; }
+        const dpr = window.devicePixelRatio || 1;
+        const w = c.width / dpr, h = c.height / dpr;
+
         cx.clearRect(0, 0, w, h);
+
         if (!this.analyser || !this.playing) return;
 
         const data = new Uint8Array(this.analyser.frequencyBinCount);
         this.analyser.getByteFrequencyData(data);
-        const bw = w / data.length * 2.5;
-        let x = 0;
-        for (let i = 0; i < data.length; i++) {
+
+        const barCount = Math.min(data.length, 80);
+        const bw = w / barCount;
+        const gap = 1.5;
+
+        for (let i = 0; i < barCount; i++) {
           const bh = (data[i] / 255) * h * 0.9;
+          if (bh < 1) continue;
+          const x = i * bw;
           const grad = cx.createLinearGradient(0, h, 0, h - bh);
-          grad.addColorStop(0, 'rgba(167,139,250,0.5)');
-          grad.addColorStop(1, 'rgba(251,191,36,0.05)');
+          grad.addColorStop(0, 'rgba(167,139,250,0.55)');
+          grad.addColorStop(0.5, 'rgba(167,139,250,0.15)');
+          grad.addColorStop(1, 'rgba(251,191,36,0.03)');
           cx.fillStyle = grad;
-          cx.fillRect(x * 2, (h - bh) * 2, (bw - 1) * 2, bh * 2);
-          x += bw;
+          cx.beginPath();
+          cx.roundRect(x + gap/2, h - bh, bw - gap, bh, 2);
+          cx.fill();
         }
       }
 
       async loadDemos() {
+        this.$.emptySt.style.display = 'none';
+        this.$.loadingSt.style.display = 'flex';
+
         for (let i = 0; i < DEMOS.length; i++) {
           const d = DEMOS[i];
           try {
@@ -934,17 +1088,25 @@
               url, blob, colors: d.colors,
               duration: d.dur, isDemo: true
             });
-          } catch (e) { console.warn('Demo gen failed:', e); }
+          } catch (err) {
+            console.warn('Demo generation failed for', d.title, err);
+          }
         }
+
+        this.$.loadingSt.style.display = 'none';
         this.renderList();
-        if (this.tracks.length && this.idx === -1) this.loadTrack(0, false);
+
+        if (this.tracks.length && this.idx === -1) {
+          this.loadTrack(0, false);
+        }
       }
 
       addFiles(files) {
         [...files].forEach(f => {
           if (!f.type.startsWith('audio/')) return;
           const url = URL.createObjectURL(f);
-          const hue1 = Math.random() * 360, hue2 = (hue1 + 60 + Math.random() * 120) % 360;
+          const hue1 = Math.random() * 360;
+          const hue2 = (hue1 + 60 + Math.random() * 120) % 360;
           this.tracks.push({
             title: f.name.replace(/\.[^.]+$/, ''),
             artist: 'Local File',
@@ -953,31 +1115,48 @@
             duration: 0, isDemo: false
           });
         });
+
         this.renderList();
-        if (this.idx === -1 && this.tracks.length) this.loadTrack(0, false);
-        this.$.fInput.value = '';
+
+        if (this.idx === -1 && this.tracks.length) {
+          this.loadTrack(0, false);
+        }
       }
 
       removeTrack(i) {
+        const wasPlaying = i === this.idx && this.playing;
+
         if (i === this.idx) {
           this.audio.pause();
-          this.audio.src = '';
+          this.audio.removeAttribute('src');
+          this.audio.load();
           this.playing = false;
           this.updatePlayBtn();
           this.$.vinyl.classList.remove('spinning');
           this.$.art.classList.remove('glow');
+
           if (this.tracks.length > 1) {
-            this.loadTrack(i < this.tracks.length - 1 ? i : i - 1, false);
+            const nextIdx = i < this.tracks.length - 1 ? i : i - 1;
+            // Defer loading until after splice
+            setTimeout(() => {
+              this.idx = -1;
+              this.loadTrack(nextIdx, false);
+            }, 0);
           } else {
             this.idx = -1;
             this.$.sTitle.textContent = 'No Track Selected';
             this.$.sArtist.textContent = 'Add music to start';
-            this.$.art.innerHTML = '<div class="ph" style="background:linear-gradient(135deg,#1e1b4b,#312e81)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>';
-            this.$.bgArt.style.backgroundImage = '';
+            this.$.artPh.style.background = 'linear-gradient(135deg, #1e1b4b, #312e81)';
+            this.$.bgArt.classList.remove('show');
+            this.$.pFill.style.width = '0%';
+            this.$.pBuffered.style.width = '0%';
+            this.$.tCur.textContent = '0:00';
+            this.$.tTot.textContent = '0:00';
           }
         } else if (i < this.idx) {
           this.idx--;
         }
+
         URL.revokeObjectURL(this.tracks[i].url);
         this.tracks.splice(i, 1);
         this.renderList();
@@ -987,72 +1166,119 @@
         if (i < 0 || i >= this.tracks.length) return;
         this.idx = i;
         const t = this.tracks[i];
+
         this.audio.src = t.url;
+        this.audio.load();
+
+        this.$.sTitle.textContent = t.title;
+        this.$.sArtist.textContent = t.artist;
+        this.updateArt(t);
+        this.updateBg(t);
+
         if (autoplay) {
+          this.initViz();
+          if (this.ac?.state === 'suspended') this.ac.resume();
           this.audio.play().then(() => {
             this.playing = true;
             this.updatePlayBtn();
             this.$.vinyl.classList.add('spinning');
             this.$.art.classList.add('glow');
-          }).catch(() => {});
+            this.renderList();
+          }).catch(err => {
+            console.warn('Playback failed:', err);
+            this.playing = false;
+            this.updatePlayBtn();
+          });
+        } else {
+          this.renderList();
         }
-        this.$.sTitle.textContent = t.title;
-        this.$.sArtist.textContent = t.artist;
-        this.updateArt(t);
-        this.updateBg(t);
-        this.renderList();
       }
 
       updateArt(t) {
         const g = `linear-gradient(135deg, ${t.colors[0]}, ${t.colors[1]})`;
-        this.$.art.innerHTML = `<div class="ph" style="background:${g}"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>`;
+        this.$.artPh.style.background = g;
       }
 
       updateBg(t) {
         this.$.bgArt.style.backgroundImage = `linear-gradient(135deg, ${t.colors[0]}, ${t.colors[1]})`;
+        this.$.bgArt.classList.add('show');
       }
 
       renderList() {
+        // Save scroll position
+        const scrollTop = this.$.plList.scrollTop;
+
         if (!this.tracks.length) {
           this.$.plList.innerHTML = '';
           this.$.plList.appendChild(this.$.emptySt);
           this.$.emptySt.style.display = 'flex';
+          this.$.plCount.textContent = '';
           return;
         }
-        this.$.emptySt.style.display = 'none';
+
+        this.$.plCount.textContent = `(${this.tracks.length})`;
 
         const frag = document.createDocumentFragment();
+
         this.tracks.forEach((t, i) => {
           const el = document.createElement('div');
-          el.className = 'track' + (i === this.idx ? ' active' : '') + (i === this.idx && this.playing ? ' playing' : '');
-          el.style.animationDelay = (i * 0.04) + 's';
+          const isActive = i === this.idx;
+          const isPlaying = isActive && this.playing;
+          el.className = 'track' + (isActive ? ' active' : '') + (isPlaying ? ' playing' : '');
+          el.style.animationDelay = (i * 0.035) + 's';
+
           el.innerHTML = `
             <div class="t-num"><span>${i + 1}</span>
               <div class="bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
             </div>
             <div class="t-art"><div class="mini-ph" style="background:linear-gradient(135deg,${t.colors[0]},${t.colors[1]})"></div></div>
-            <div class="t-info"><div class="t-name">${t.title}</div><div class="t-artist">${t.artist}</div></div>
+            <div class="t-info"><div class="t-name">${this.escHtml(t.title)}</div><div class="t-artist">${this.escHtml(t.artist)}</div></div>
             <div class="t-dur">${t.duration ? fmt(t.duration) : '--:--'}</div>
-            <button class="t-del" data-i="${i}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            <button class="t-del" data-i="${i}" aria-label="Remove track"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
           `;
+
           el.onclick = e => {
             if (e.target.closest('.t-del')) return;
             this.loadTrack(i);
           };
+
           el.querySelector('.t-del').onclick = e => {
             e.stopPropagation();
             this.removeTrack(i);
           };
+
           frag.appendChild(el);
         });
 
         this.$.plList.innerHTML = '';
         this.$.plList.appendChild(frag);
+
+        // Restore scroll position
+        this.$.plList.scrollTop = scrollTop;
+
+        // Auto-scroll to active track
+        if (this.idx >= 0) {
+          const activeTrack = this.$.plList.querySelector('.track.active');
+          if (activeTrack) {
+            const listRect = this.$.plList.getBoundingClientRect();
+            const trackRect = activeTrack.getBoundingClientRect();
+            if (trackRect.top < listRect.top || trackRect.bottom > listRect.bottom) {
+              activeTrack.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+          }
+        }
+      }
+
+      escHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
       }
 
       toggle() {
         if (this.tracks.length === 0) return;
         if (this.idx === -1) { this.loadTrack(0); return; }
+
         this.initViz();
         if (this.ac?.state === 'suspended') this.ac.resume();
 
@@ -1066,8 +1292,9 @@
             this.playing = true;
             this.$.vinyl.classList.add('spinning');
             this.$.art.classList.add('glow');
-          }).catch(() => {});
+          }).catch(err => console.warn('Play failed:', err));
         }
+
         this.updatePlayBtn();
         this.renderList();
       }
@@ -1082,17 +1309,14 @@
           n = (this.idx + 1) % this.tracks.length;
         }
         this.loadTrack(n);
-        this.initViz();
-        if (this.ac?.state === 'suspended') this.ac.resume();
-        this.playing = true;
-        this.updatePlayBtn();
-        this.$.vinyl.classList.add('spinning');
-        this.$.art.classList.add('glow');
       }
 
       prev() {
         if (!this.tracks.length) return;
-        if (this.audio.currentTime > 3) { this.audio.currentTime = 0; return; }
+        if (this.audio.currentTime > 3) {
+          this.audio.currentTime = 0;
+          return;
+        }
         let p;
         if (this.shuffleMode) {
           p = Math.floor(Math.random() * this.tracks.length);
@@ -1100,12 +1324,6 @@
           p = (this.idx - 1 + this.tracks.length) % this.tracks.length;
         }
         this.loadTrack(p);
-        this.initViz();
-        if (this.ac?.state === 'suspended') this.ac.resume();
-        this.playing = true;
-        this.updatePlayBtn();
-        this.$.vinyl.classList.add('spinning');
-        this.$.art.classList.add('glow');
       }
 
       onEnd() {
@@ -1127,35 +1345,53 @@
         }
       }
 
+      onMeta() {
+        if (this.idx >= 0 && this.audio.duration && isFinite(this.audio.duration)) {
+          if (!this.tracks[this.idx].duration || this.tracks[this.idx].duration === 0) {
+            this.tracks[this.idx].duration = this.audio.duration;
+          }
+          this.$.tTot.textContent = fmt(this.audio.duration);
+        }
+      }
+
+      onAudioError() {
+        if (this.idx >= 0) {
+          console.warn('Audio error for track:', this.tracks[this.idx]?.title);
+        }
+      }
+
       onTime() {
         if (this.seeking) return;
         const a = this.audio;
-        const pct = a.duration ? (a.currentTime / a.duration) * 100 : 0;
+        if (!a.duration || !isFinite(a.duration)) return;
+
+        const pct = (a.currentTime / a.duration) * 100;
         this.$.pFill.style.width = pct + '%';
         this.$.tCur.textContent = fmt(a.currentTime);
         this.$.tTot.textContent = fmt(a.duration);
 
-        // Update track duration if we didn't know it
-        if (this.idx >= 0 && a.duration && !this.tracks[this.idx].duration) {
-          this.tracks[this.idx].duration = a.duration;
+        // Buffered indicator
+        if (a.buffered.length > 0) {
+          const buffEnd = a.buffered.end(a.buffered.length - 1);
+          this.$.pBuffered.style.width = ((buffEnd / a.duration) * 100) + '%';
         }
       }
 
       doSeek(e) {
-        if (!this.seeking) return;
+        if (!this.seeking || !this.audio.duration || !isFinite(this.audio.duration)) return;
         const rect = this.$.pBar.getBoundingClientRect();
         const cx = e.touches ? e.touches[0].clientX : e.clientX;
         const pct = Math.max(0, Math.min(1, (cx - rect.left) / rect.width));
-        if (this.audio.duration) {
-          this.audio.currentTime = pct * this.audio.duration;
-          this.$.pFill.style.width = (pct * 100) + '%';
-        }
+        this.audio.currentTime = pct * this.audio.duration;
+        this.$.pFill.style.width = (pct * 100) + '%';
       }
 
       setVol(v) {
+        v = Math.max(0, Math.min(1, v));
         this.audio.volume = v;
         this.$.vSlider.value = v;
         this.updateVolIcon(v);
+        if (v > 0) this._prevVol = v;
       }
 
       toggleMute() {
@@ -1186,22 +1422,21 @@
       toggleRepeat() {
         this.repeatMode = (this.repeatMode + 1) % 3;
         this.$.repeat.classList.toggle('on', this.repeatMode > 0);
-        if (this.repeatMode === 2) {
-          this.$.repeat.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><span style="position:absolute;font-size:8px;font-weight:700">1</span>';
-          this.$.repeat.style.position = 'relative';
-        } else {
-          this.$.repeat.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>';
-        }
+        // Safe: use pre-existing span element instead of innerHTML injection
+        this.$.repeatOne.style.display = this.repeatMode === 2 ? 'block' : 'none';
       }
 
       updatePlayBtn() {
         this.$.icoPlay.innerHTML = this.playing
-          ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
+          ? '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>'
           : '<path d="M8 5v14l11-7z"/>';
+        this.$.play.title = this.playing ? 'Pause' : 'Play';
+        this.$.play.setAttribute('aria-label', this.playing ? 'Pause' : 'Play');
       }
 
       keys(e) {
-        if (e.target.tagName === 'INPUT') return;
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
         switch (e.code) {
           case 'Space':
             e.preventDefault();
@@ -1209,7 +1444,9 @@
             break;
           case 'ArrowRight':
             e.preventDefault();
-            if (this.audio.duration) this.audio.currentTime = Math.min(this.audio.duration, this.audio.currentTime + 5);
+            if (this.audio.duration && isFinite(this.audio.duration)) {
+              this.audio.currentTime = Math.min(this.audio.duration, this.audio.currentTime + 5);
+            }
             break;
           case 'ArrowLeft':
             e.preventDefault();
@@ -1217,17 +1454,23 @@
             break;
           case 'ArrowUp':
             e.preventDefault();
-            this.setVol(Math.min(1, this.audio.volume + 0.05));
+            this.setVol(this.audio.volume + 0.05);
             break;
           case 'ArrowDown':
             e.preventDefault();
-            this.setVol(Math.max(0, this.audio.volume - 0.05));
+            this.setVol(this.audio.volume - 0.05);
             break;
           case 'KeyN':
+            e.preventDefault();
             this.next();
             break;
           case 'KeyP':
+            e.preventDefault();
             this.prev();
+            break;
+          case 'KeyM':
+            e.preventDefault();
+            this.toggleMute();
             break;
         }
       }
