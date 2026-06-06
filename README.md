@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://img.shields.io/badge/Version-4.0.0-a78bfa?style=for-the-badge" alt="Version">
+<img src="https://img.shields.io/badge/Version-4.1.0-a78bfa?style=for-the-badge" alt="Version">
 <img src="https://img.shields.io/badge/Status-Live-22c55e?style=for-the-badge" alt="Status">
 
 <br><br>
