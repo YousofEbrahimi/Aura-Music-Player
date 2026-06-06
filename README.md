@@ -62,18 +62,25 @@
 
 <br>
 
-- **Real-time Audio Visualizer** — Frequency bars rendered on Canvas using Web Audio API
-- **Spinning Vinyl Animation** — Classic vinyl record that rotates while music plays
-- **Drag & Drop Support** — Drop your MP3, WAV, OGG, or FLAC files directly into the player
-- **4 Built-in Demo Tracks** — Procedurally generated with Web Audio API, zero external files
-- **Shuffle & Repeat** — Shuffle mode and repeat (all tracks / single track)
-- **Smart Volume Control** — Mute toggle with adaptive icon that changes with volume level
-- **Keyboard Shortcuts** — Full control without touching the mouse
-- **Dynamic Album Art** — Generated gradient artwork for each track
-- **Ambient Background** — Blurred album art backdrop that shifts per track
-- **Responsive Design** — Optimized for desktop and mobile screens
-- **Dark Glassmorphism UI** — Modern frosted-glass aesthetic with grain texture overlay
-
+- **4 Built-in Songs** — Real music loaded from GitHub Pages
+- **Real-time Audio Visualizer** — Frequency bars & waveform mode
+- **Spinning Vinyl Animation** — Classic vinyl record that rotates while playing
+- **Drag & Drop Support** — Drop MP3, WAV, OGG, FLAC files directly
+- **3-Band Equalizer** — Bass, Mid, Treble with 6 presets (Flat, Rock, Pop, Jazz, Bass+, Classic)
+- **Playback Speed Control** — 0.5x to 2x with chip buttons
+- **Search Playlist** — Real-time search filter
+- **Favorites** — Heart any track, filter favorites view
+- **Sleep Timer** — Auto-stop after 5/10/15/30/45/60 min
+- **8 Theme Colors** — Purple, Pink, Green, Blue, Yellow, Red, Indigo, Orange
+- **Playback History** — Recent tab with last 50 tracks
+- **Shuffle & Repeat** — Repeat all / single track
+- **Smart Volume** — Mute toggle with adaptive icon
+- **Keyboard Shortcuts** — Full control with 18+ shortcuts
+- **Progress Waveform** — Mini visualizer inside the progress bar
+- **Drag to Reorder** — Rearrange tracks by dragging
+- **LocalStorage** — All settings, favorites, history & theme persisted
+- **Responsive Design** — Optimized for desktop and mobile
+- **Dark Glassmorphism UI** — Frosted-glass design with grain texture
 <br>
 
 ### 🌐 Live Demo
@@ -249,23 +256,29 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 ## 🇮🇷 فارسی
 
 <br>
-
 ### ✨ ویژگی‌ها
 
 <br>
 
-- **ویژوالایزر صوتی زنده** — نمایش فرکانس‌ها روی Canvas با Web Audio API
-- **انیمیشن وینیل چرخان** — صفحه گرامافون کلاسیک که هنگام پخش موسیقی می‌چرخد
-- **پشتیبانی از Drag & Drop** — فایل‌های MP3، WAV، OGG یا FLAC رو مستقیم بنداز تو پلیر
-- **۴ ترک دمو داخلی** — ساخته شده با Web Audio API، بدون هیچ فایل خارجی
-- **Shuffle و Repeat** — حالت شافل و تکرار (همه ترک‌ها / تک ترک)
-- **کنترل ولوم هوشمند** — قطع صدا با آیکون تطبیقی که با سطح صدا تغییر می‌کنه
-- **شورتکات‌های کیبورد** — کنترل کامل بدون نیاز به موس
-- **آرت پویا** — گرادیانت هنری تولید شده برای هر ترک
-- **بکگراند محیطی** — پس‌زمینه بلور شده از آرت آلبوم که با هر ترک عوض میشه
-- **طراحی ریسپانسیو** — بهینه‌شده برای دسکتاپ و موبایل
-- **رابط کاربری Glassmorphism تاریک** — زیبایی شیشه‌ای مدرن با بافت دانه‌دانه
-
+- **۴ آهنگ داخلی** — موسیقی واقعی لود شده از GitHub Pages
+- **ویژوالایزر صوتی زنده** — نمایش فرکانس و حالت موج‌نما
+- **انیمیشن وینیل چرخان** — صفحه گرامافون کلاسیک
+- **پشتیبانی Drag & Drop** — فایل‌های MP3، WAV، OGG، FLAC
+- **اکولایزر ۳ بانده** — Bass، Mid، Treble با ۶ پریست
+- **کنترل سرعت پخش** — 0.5x تا 2x
+- **جستجو در پلی‌لیست** — فیلتر لحظه‌ای
+- **علاقه‌مندی‌ها** — قلب روی هر ترک + فیلتر
+- **تایمر خواب** — توقف خودکار بعد از ۵ تا ۶۰ دقیقه
+- **۸ رنگ تم** — بنفش، صورتی، سبز، آبی، زرد، قرمز، نارنجی، نیلی
+- **تاریخچه پخش** — تب اخیر با ۵۰ ترک آخر
+- **Shuffle و Repeat** — تکرار همه / تک ترک
+- **ولوم هوشمند** — قطع صدا با آیکون تطبیقی
+- **شورتکات‌های کیبورد** — کنترل کامل با ۱۸+ شورتکات
+- **موج‌نمای پیشرفت** — ویژوالایزر کوچک داخل نوار پیشرفت
+- **جابجایی ترتیب ترک‌ها** — درگ برای مرتب‌سازی
+- **ذخیره‌سازی** — تمام تنظیمات، علاقه‌مندی‌ها و تم در localStorage
+- **طراحی ریسپانسیو** — بهینه برای دسکتاپ و موبایل
+- **رابط کاربری Glassmorphism تاریک** — طراحی شیشه‌ای مدرن
 <br>
 
 ### 🌐 دموی زنده
