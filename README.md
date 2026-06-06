@@ -135,7 +135,13 @@ Aura-Music-Player/
 │
 ├── index.html        # Complete application (HTML + CSS + JS)
 ├── README.md         # Project documentation (EN + FA)
-└── LICENSE           # MIT License
+├── LICENSE          # MIT License
+├──songs/
+├─── bidad.mp3
+├─── moonlight.mp3
+├─── link.mp3
+└─── sky-high.mp3
+
 ```
 
 <br>
