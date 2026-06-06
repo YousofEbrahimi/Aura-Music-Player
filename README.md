@@ -95,15 +95,24 @@
 
 <br>
 
-| Key | Action |
-|-----|--------|
-| `Space` | Play / Pause |
-| `←` | Seek backward 5 seconds |
-| `→` | Seek forward 5 seconds |
-| `↑` | Volume up |
-| `↓` | Volume down |
-| `N` | Next track |
-| `P` | Previous track |
+| Key | Action | کلید | عملکرد |
+|-----|--------|------|--------|
+| `Space` | Play / Pause | `Space` | پخش / توقف |
+| `N` | Next track | `N` | ترک بعدی |
+| `P` | Previous track | `P` | ترک قبلی |
+| `M` | Mute / Unmute | `M` | قطع صدا |
+| `S` | Toggle shuffle | `S` | شافل |
+| `R` | Toggle repeat | `R` | تکرار |
+| `L` | Toggle favorite | `L` | علاقه‌مندی |
+| `H` | Filter favorites | `H` | فیلتر علاقه‌مندی‌ها |
+| `F` | Search playlist | `F` | جستجو |
+| `E` | Equalizer | `E` | اکولایزر |
+| `V` | Visualizer mode | `V` | حالت ویژوالایزر |
+| `T` | Sleep timer | `T` | تایمر خواب |
+| `+` `-` | Speed ±0.1 | `+` `-` | سرعت |
+| `←` `→` | Seek ±5s | `←` `→` | عقب/جلو ۵ ثانیه |
+| `↑` `↓` | Volume | `↑` `↓` | صدا |
+| `?` | Shortcuts panel | `?` | پنل شورتکات‌ها |
 
 <br>
 
@@ -301,15 +310,24 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 <br>
 
-| کلید | عملکرد |
-|------|--------|
-| `Space` | پخش / توقف |
-| `←` | عقب رفتن ۵ ثانیه |
-| `→` | جلو رفتن ۵ ثانیه |
-| `↑` | زیاد کردن صدا |
-| `↓` | کم کردن صدا |
-| `N` | ترک بعدی |
-| `P` | ترک قبلی |
+| Key | Action | کلید | عملکرد |
+|-----|--------|------|--------|
+| `Space` | Play / Pause | `Space` | پخش / توقف |
+| `N` | Next track | `N` | ترک بعدی |
+| `P` | Previous track | `P` | ترک قبلی |
+| `M` | Mute / Unmute | `M` | قطع صدا |
+| `S` | Toggle shuffle | `S` | شافل |
+| `R` | Toggle repeat | `R` | تکرار |
+| `L` | Toggle favorite | `L` | علاقه‌مندی |
+| `H` | Filter favorites | `H` | فیلتر علاقه‌مندی‌ها |
+| `F` | Search playlist | `F` | جستجو |
+| `E` | Equalizer | `E` | اکولایزر |
+| `V` | Visualizer mode | `V` | حالت ویژوالایزر |
+| `T` | Sleep timer | `T` | تایمر خواب |
+| `+` `-` | Speed ±0.1 | `+` `-` | سرعت |
+| `←` `→` | Seek ±5s | `←` `→` | عقب/جلو ۵ ثانیه |
+| `↑` `↓` | Volume | `↑` `↓` | صدا |
+| `?` | Shortcuts panel | `?` | پنل شورتکات‌ها |
 
 <br>
 
@@ -339,9 +357,14 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 ```
 Aura-Music-Player/
 │
-├── index.html        # کل برنامه (HTML + CSS + JS)
-├── README.md         # مستندات پروژه (انگلیسی + فارسی)
-└── LICENSE           # لایسنس MIT
+├── index.html        # Complete application (HTML + CSS + JS)
+├── README.md         # Project documentation (EN + FA)
+├── LICENSE          # MIT License
+├──songs/
+├─── bidad.mp3
+├─── moonlight.mp3
+├─── link.mp3
+└─── sky-high.mp3
 ```
 
 <br>
